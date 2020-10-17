@@ -73,4 +73,13 @@ function Database:Reset()
     GuildMemes.db.global.quotes = {};
 end
 
+
+function Database:SetOption(option, value)
+    GuildMemes.db.global.options[option] = value;
+end
+
+function Database:GetOption(option)
+    return GuildMemes.db.global.options[option];
+end
+
 GuildMemes.Database = Database;
