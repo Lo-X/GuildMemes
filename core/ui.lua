@@ -9,7 +9,6 @@ GuildMemes.syncTimer = nil;
 
 local TAB_QUOTES = "TAB_QUOTES";
 local TAB_SYNC = "TAB_SYNC";
-local TAB_ABOUT = "TAB_ABOUT";
 
 -- Add quote form object
 local GuildMemeUI = {
@@ -206,6 +205,7 @@ local function FillTabSync(container)
             local syncButton = AceGUI:Create("Button");
             syncButton:SetText(L["LABEL_SYNC_BUTTON"]);
             syncButton:SetRelativeWidth(0.5);
+            if true == GuildMemes.Database:GetOption("auto_sync") then syncButton:SetDisabled(true) end
             actionGroup:AddChild(syncButton);
 
 
@@ -230,10 +230,6 @@ local function FillTabSync(container)
     container:AddChild(tabGroup);
 end
 
--- fills the about tab
-local function FillTabAbout(container)
-end
-
 -- Callback function for OnGroupSelected
 local function SelectGroup(container, event, group)
     if nil ~= GuildMemes.syncTimer then
@@ -244,18 +240,17 @@ local function SelectGroup(container, event, group)
         FillTabQuotes(container);
     elseif TAB_SYNC == group then
         FillTabSync(container);
-    elseif TAB_ABOUT == group then
-        FillTabAbout(container);
     end
 end
 
-function GuildMemes:OpenUI()
-    -- Don't ipen multiple windows
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function GuildMemes:OpenUI(openTab)
+    -- Don't open multiple windows
     if isOpened then return end
 
     local frame = AceGUI:Create("Frame")
     frame:SetTitle(addonName);
-    --frame:SetStatusText("AceGUI-3.0 Example Container Frame")
     frame:SetCallback("OnClose", function(widget)
         if nil ~= GuildMemes.syncTimer then
             GuildMemes:CancelTimer(GuildMemes.syncTimer);
@@ -263,25 +258,24 @@ function GuildMemes:OpenUI()
         AceGUI:Release(widget);
         isOpened = false;
     end)
-    -- Fill Layout - the TabGroup widget will fill the whole frame
-    frame:SetLayout("Fill")
+    frame:SetLayout("Fill");
 
     -- Create the TabGroup
-    local tab =  AceGUI:Create("TabGroup")
-    tab:SetLayout("Flow")
-    -- Setup which tabs to show
+    local tab = AceGUI:Create("TabGroup");
+    tab:SetLayout("Flow");
     tab:SetTabs({
         {text = L[TAB_QUOTES], value = TAB_QUOTES}, 
         {text = L[TAB_SYNC], value = TAB_SYNC},
-        {text = L[TAB_ABOUT], value = TAB_ABOUT},
-    })
-    -- Register callback
-    tab:SetCallback("OnGroupSelected", SelectGroup)
-    -- Set initial Tab (this will fire the OnGroupSelected callback)
-    tab:SelectTab(TAB_QUOTES)
+    });
+    tab:SetCallback("OnGroupSelected", SelectGroup);
 
-    -- add to the frame container
-    frame:AddChild(tab)
+    -- Set initial Tab
+    local openedTab = TAB_QUOTES;
+    if nil ~= openTab and "" ~= openTab then
+        openedTab = openTab;
+    end
+    tab:SelectTab(openedTab);
 
+    frame:AddChild(tab);
     isOpened = true;
 end

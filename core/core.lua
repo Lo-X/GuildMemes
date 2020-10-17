@@ -45,12 +45,21 @@ local options = {
             inline = true,
             args = {
                 openQuotes = {
+                    order = 1,
                     name = L["LABEL_ACTION_OPEN_QUOTES"],
                     desc = L["LABEL_ACTION_OPEN_QUOTES_DESCRIPTION"],
                     type = "execute",
                     func = function() GuildMemes:OpenUI(); end,
                 },
+                syncQuotes = {
+                    order = 2,
+                    name = L["LABEL_ACTION_OPEN_SYNC"],
+                    desc = L["LABEL_ACTION_OPEN_SYNC_DESCRIPTION"],
+                    type = "execute",
+                    func = function() GuildMemes:OpenUI("TAB_SYNC"); end,
+                },
                 resetDatabase = {
+                    order = 3,
                     name = L["LABEL_ACTION_RESET_DATABASE"],
                     desc = L["LABEL_ACTION_RESET_DATABASE_DESCRIPTION"],
                     confirm = function() return L["LABEL_ACTION_RESET_DATABASE_CONFIRM"] end,

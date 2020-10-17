@@ -25,6 +25,8 @@ if L then
     L["LABEL_SYNC_OPTIONS"] = "Synchronization";
     L["LABEL_ACTION_OPEN_QUOTES"] = "Edit quotes";
     L["LABEL_ACTION_OPEN_QUOTES_DESCRIPTION"] = "Add new quotes, edit old ones and remove those you don't want.";
+    L["LABEL_ACTION_OPEN_SYNC"] = "Sync quotes";
+    L["LABEL_ACTION_OPEN_SYNC_DESCRIPTION"] = "Manually fetch quotes from your guild if your guildmates have GuildMeme installed.";
     L["LABEL_ACTION_RESET_DATABASE"] = "Reset quote database";
     L["LABEL_ACTION_RESET_DATABASE_DESCRIPTION"] = "This will erase all your saved quotes! If auto sync is enabled you will receive quotes from your guildmates at login if they have GuildMeme installed.";
     L["LABEL_ACTION_RESET_DATABASE_CONFIRM"] = "This will erase all your saved quotes! Are you sure?";
