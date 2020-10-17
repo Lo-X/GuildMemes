@@ -7,6 +7,7 @@ if L then
     L["ADDON_DESCRIPTION"] = "Save and share your guildmates best quotes!";
     L["ADDON_VERSION"] = "Version:";
     L["ADDON_AUTHOR"] = "Author:";
+    L["ADDON_MOTD"] = "Hey, thanks for using "..addonName.."! Type |cffffd700/gm|r or |cffffd700/guildmemes|r for options and |cffffd700/gm add|r for the quotes window.";
     L["QUOTE_ADDED"] = function(author, quote) return "Added quote from ".. author ..": ".. quote; end
     L["QUOTES_RESET"] = "All saved quotes have ben reset.";
     L["TAB_QUOTES"] = "Guildmates quotes";

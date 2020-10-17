@@ -113,7 +113,7 @@ function GuildMemes:OnEnable()
     GuildMemes:RegisterComm(GuildMemes.COMM_PREFIX);
 
     -- say hello
-    GuildMemes:Print(L["ADDON_NAME"]);
+    GuildMemes:Print(L["ADDON_MOTD"]);
 
     if true == GuildMemes.Database:GetOption("auto_sync") then
         GuildMemes:AskQuoteList();
@@ -128,7 +128,9 @@ function GuildMemes:OnSlashCommand(input)
     -- Called when the addon is disabled
     if nil ~= input and "" ~= input then
         local command, nextposition = GuildMemes:GetArgs(input, 1);
-        if "reset" == command then
+        if "add" == command then
+            GuildMemes:OpenUI();
+        elseif "reset" == command then
             GuildMemes.Database:Reset();
             GuildMemes:Print(L["QUOTES_RESET"]);
         end
