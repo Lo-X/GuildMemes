@@ -1,5 +1,6 @@
 
 local addonName, GuildMemes = ...;
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName, true);
 
 -- MESSAGES CONSTANTS
 local MESSAGE_ASK_QUOTE_LIST = "ASK_QUOTE_LIST";

@@ -73,7 +73,7 @@ function GuildMemes:OnSlashCommand(input)
             GuildMemes:Print(L["QUOTES_RESET"]);
         end
     else
-        GuildMemes:Print("TODO HELP");
+        GuildMemes:OpenUI();
     end
 end
 
@@ -81,12 +81,15 @@ end
 --
 -- @param string source: The name of the quote author
 -- @param string content: The quote itself
+-- @return Quote
 function GuildMemes:AddQuote(source, content)
     local quote = GuildMemes.Quote:Create();
     quote.source = source;
     quote.quote = content;
     GuildMemes.Database:Save(quote);
     GuildMemes:SendQuote(quote);
+
+    return quote;
 end
 
 function GuildMemes:OnQuoteListReceived(ids)

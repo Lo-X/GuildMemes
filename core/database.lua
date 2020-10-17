@@ -25,9 +25,8 @@ end
 --
 -- @return Quote[]
 function Database:FindAll()
-    local quotes = GuildMemes.db.global.quotes;
     local r = {};
-    for index, quote in ipairs(quotes) do
+    for index, quote in ipairs(GuildMemes.db.global.quotes) do
         table.insert(r, GuildMemes.Quote:CreateFromTable(quote));
     end
 
