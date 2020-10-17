@@ -33,14 +33,14 @@ local function AddQuoteLines(quote, container)
     container:AddChild(lineGroup);
 
     local authorEdit = AceGUI:Create("EditBox");
-    authorEdit:SetLabel("Author:");
+    authorEdit:SetLabel(L["LABEL_AUTHOR"]);
     authorEdit:SetRelativeWidth(0.2);
     authorEdit:SetText(quote.source);
     authorEdit:SetCallback("OnEnterPressed", function(widget, event, text) quote.source = text end);
     lineGroup:AddChild(authorEdit);
 
     local quoteEdit = AceGUI:Create("EditBox");
-    quoteEdit:SetLabel("Quote:");
+    quoteEdit:SetLabel(L["LABEL_QUOTE"]);
     quoteEdit:SetRelativeWidth(0.8);
     quoteEdit:SetText(quote.quote);
     quoteEdit:SetCallback("OnEnterPressed", function(widget, event, text) quote.quote = text end);
@@ -58,7 +58,7 @@ local function FillTabQuotes(container)
     tabGroup:SetLayout("Flow");
 
         local addHeading = AceGUI:Create("Heading");
-        addHeading:SetText("New quote:");
+        addHeading:SetText(L["HEADER_NEW_QUOTE"]);
         addHeading:SetFullWidth(true);
         tabGroup:AddChild(addHeading);
 
@@ -69,7 +69,7 @@ local function FillTabQuotes(container)
         tabGroup:AddChild(addFormGroup);
 
             local authorEdit = AceGUI:Create("EditBox");
-            authorEdit:SetLabel("Author:");
+            authorEdit:SetLabel(L["LABEL_AUTHOR"]);
             authorEdit:SetRelativeWidth(0.2);
             authorEdit:SetCallback("OnEnterPressed", function(widget, event, text) 
                 quoteForm.authorValue = text;
@@ -78,7 +78,7 @@ local function FillTabQuotes(container)
             addFormGroup:AddChild(authorEdit);
 
             local quoteEdit = AceGUI:Create("EditBox");
-            quoteEdit:SetLabel("Quote:");
+            quoteEdit:SetLabel(L["LABEL_QUOTE"]);
             quoteEdit:SetRelativeWidth(0.6);
             quoteEdit:SetCallback("OnEnterPressed", function(widget, event, text) 
                 quoteForm.quoteValue = text;
@@ -87,7 +87,7 @@ local function FillTabQuotes(container)
             addFormGroup:AddChild(quoteEdit);
 
             local addButton = AceGUI:Create("Button");
-            addButton:SetText("Add");
+            addButton:SetText(L["LABEL_ADD_QUOTE_BUTTON"]);
             addButton:SetRelativeWidth(0.2);
             addFormGroup:AddChild(addButton);
             quoteForm.button = addButton;
@@ -95,7 +95,7 @@ local function FillTabQuotes(container)
 
 
         local quotesHeading = AceGUI:Create("Heading");
-        quotesHeading:SetText("Saved quotes:");
+        quotesHeading:SetText(L["HEADER_QUOTE_LIST"]);
         quotesHeading:SetFullWidth(true);
         tabGroup:AddChild(quotesHeading);
 
