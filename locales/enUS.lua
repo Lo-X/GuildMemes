@@ -14,5 +14,6 @@ if L then
     L["LABEL_AUTHOR"] = "Author:";
     L["LABEL_QUOTE"] = "Quote:";
     L["LABEL_ADD_QUOTE_BUTTON"] = "Add";
+    L["LABEL_DELETE_QUOTE_BUTTON"] = "Delete";
     L["ERROR_NOT_IN_GUILD"] = "You can only use this addon if you have a guild!";
 end

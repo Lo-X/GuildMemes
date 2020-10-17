@@ -58,17 +58,7 @@ function GuildMemes:OnSlashCommand(input)
     -- Called when the addon is disabled
     if nil ~= input and "" ~= input then
         local command, nextposition = GuildMemes:GetArgs(input, 1);
-        if "add" == command then
-            local chain = string.sub(input, nextposition);
-            local source, nextposition = GuildMemes:GetArgs(chain, 1);
-            local content = string.sub(chain, nextposition);
-
-            self:AddQuote(source, content);
-            GuildMemes:Print(L["QUOTE_ADDED"](source, content));
-        elseif "list" == command then
-            local quotes = GuildMemes.Database:FindAll();
-            table.foreach(quotes, function(k, v) if v ~= nil then v:Print() end end);
-        elseif "reset" == command then
+        if "reset" == command then
             GuildMemes.Database:Reset();
             GuildMemes:Print(L["QUOTES_RESET"]);
         end

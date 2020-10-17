@@ -48,6 +48,26 @@ function Database:Save(quote)
     end
 end
 
+
+-- Removes a Quote from the database
+--
+-- @param Quote quote: The Quote object to remove
+function Database:Remove(quote)
+    local index = nil;
+    for i, q in ipairs(GuildMemes.db.global.quotes) do
+        if quote.id == q.id then
+            index = i;
+        end
+    end
+
+    if nil ~= index then
+        table.remove(GuildMemes.db.global.quotes, index);
+    else
+        GuildMemes:PrintError("Quote {".. quote.id .."} not found in database, unable to remove it");
+    end
+end
+
+
 -- Reset the local database
 function Database:Reset()
     GuildMemes.db.global.quotes = {};

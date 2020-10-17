@@ -26,7 +26,18 @@ function AddQuoteForm:CheckButtonEnable()
     end
 end
 
-local function AddQuoteLines(quote, container)
+
+
+function AddQuoteForm:RefreshQuoteList(container)
+    container:ReleaseChildren();
+    local quotes = GuildMemes.Database:FindAll();
+    table.foreach(quotes, function(k, quote)
+        AddQuoteForm:AddQuoteLines(quote, container);
+    end);
+    container:DoLayout();
+end
+
+function AddQuoteForm:AddQuoteLines(quote, container)
     local lineGroup = AceGUI:Create("SimpleGroup");
     lineGroup:SetFullWidth(true);
     lineGroup:SetLayout("Flow");
@@ -41,10 +52,16 @@ local function AddQuoteLines(quote, container)
 
     local quoteEdit = AceGUI:Create("EditBox");
     quoteEdit:SetLabel(L["LABEL_QUOTE"]);
-    quoteEdit:SetRelativeWidth(0.8);
+    quoteEdit:SetRelativeWidth(0.67);
     quoteEdit:SetText(quote.quote);
     quoteEdit:SetCallback("OnEnterPressed", function(widget, event, text) quote.quote = text end);
     lineGroup:AddChild(quoteEdit);
+
+    local deleteButton = AceGUI:Create("Button");
+    deleteButton:SetText(L["LABEL_DELETE_QUOTE_BUTTON"]);
+    deleteButton:SetRelativeWidth(0.12);
+    deleteButton:SetCallback("OnClick", function(widget, event, text) GuildMemes.Database:Remove(quote); AddQuoteForm:RefreshQuoteList(container); end);
+    lineGroup:AddChild(deleteButton);
 end
 
 -- fills the quotes tab with quotes and form to add a new one
@@ -79,7 +96,7 @@ local function FillTabQuotes(container)
 
             local quoteEdit = AceGUI:Create("EditBox");
             quoteEdit:SetLabel(L["LABEL_QUOTE"]);
-            quoteEdit:SetRelativeWidth(0.6);
+            quoteEdit:SetRelativeWidth(0.67);
             quoteEdit:SetCallback("OnEnterPressed", function(widget, event, text) 
                 quoteForm.quoteValue = text;
                 quoteForm:CheckButtonEnable();
@@ -88,7 +105,7 @@ local function FillTabQuotes(container)
 
             local addButton = AceGUI:Create("Button");
             addButton:SetText(L["LABEL_ADD_QUOTE_BUTTON"]);
-            addButton:SetRelativeWidth(0.2);
+            addButton:SetRelativeWidth(0.12);
             addFormGroup:AddChild(addButton);
             quoteForm.button = addButton;
             quoteForm:CheckButtonEnable();
@@ -108,16 +125,10 @@ local function FillTabQuotes(container)
             scrollFrame = AceGUI:Create("ScrollFrame");
             scrollFrame:SetLayout("Flow");
             scrollGroup:AddChild(scrollFrame);
-
-                
-                local quotes = GuildMemes.Database:FindAll();
-                table.foreach(quotes, function(k, quote)
-                    AddQuoteLines(quote, scrollFrame);
-                end);
+            AddQuoteForm:RefreshQuoteList(scrollFrame);
 
     addButton:SetCallback("OnClick", function(widget, event, text) 
         if "" ~= quoteForm.authorValue and "" ~= quoteForm.quoteValue then
-            print(table.getn(GuildMemes.Database:FindAll()));
             -- add the quote
             local quote = GuildMemes:AddQuote(quoteForm.authorValue, quoteForm.quoteValue);
             quoteForm.authorValue = "";
@@ -126,13 +137,7 @@ local function FillTabQuotes(container)
             quoteEdit:SetText("");
 
             -- add the quote to quote list
-            scrollFrame:ReleaseChildren();
-            local quotes = GuildMemes.Database:FindAll();
-            print(table.getn(quotes));
-            table.foreach(quotes, function(k, quote)
-                AddQuoteLines(quote, scrollFrame);
-            end);
-            scrollFrame:DoLayout();
+            AddQuoteForm:RefreshQuoteList(scrollFrame);
         end
     end);
 
