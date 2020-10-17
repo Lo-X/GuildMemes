@@ -5,10 +5,10 @@ Save and share your guildmates best quotes!
 
 local addonName, addon = ...;
 local L = LibStub("AceLocale-3.0"):GetLocale(addonName, true);
-local GuildMemes = LibStub("AceAddon-3.0"):NewAddon(addon, addonName, "AceEvent-3.0", "AceConsole-3.0", "AceComm-3.0");
+local GuildMemes = LibStub("AceAddon-3.0"):NewAddon(addon, addonName, "AceEvent-3.0", "AceConsole-3.0", "AceComm-3.0", "AceTimer-3.0");
 
 -- CONFIGURATION
-GuildMemes.version = --[["0.0.1"]] "dev";
+GuildMemes.version = --[["1.0.0-alpha1"]] "dev";
 
 GuildMemes.COMM_PREFIX = addonName;
 GuildMemes.COMM_CHANNEL = "GUILD";
@@ -164,13 +164,18 @@ function GuildMemes:OnQuoteListReceived(ids)
     end
 end
 
+-- When a quote is received via communication, save it or add it to the waiting list depending on conf
+--
+-- @param Quote quote
 function GuildMemes:OnQuoteReceived(quote)
     if nil == GuildMemes.Database:Find(quote.id) then
         if true == GuildMemes.Database:GetOption("auto_sync") then
             GuildMemes.Database:Save(quote);
             GuildMemes:Print(L["QUOTE_ADDED"](quote.source, quote.quote));
         else
-            -- @TODO add quote to waiting list
+            if true == GuildMemes.WaitingList:Add(quote) then
+                GuildMemes:Debug("Added to waiting list: ".. quote.quote);
+            end
         end
     end
 end

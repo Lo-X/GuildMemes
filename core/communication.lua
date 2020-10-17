@@ -17,7 +17,7 @@ end
 -- process the incoming message
 function GuildMemes:OnCommReceived(prefix, message, distribution, sender)
     -- ignore messages we have sent
-    if "dev" ~= GuildMemes.version and GuildMemes.CURRENT_PLAYER == sender then return end
+    if GuildMemes.CURRENT_PLAYER == sender then return end
     GuildMemes:Debug("Comm Received // ".. message .. " // from ".. sender);
 
     local command, nextposition = GuildMemes:GetArgs(message, 1);

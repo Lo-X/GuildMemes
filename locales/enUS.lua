@@ -11,13 +11,15 @@ if L then
     L["QUOTE_ADDED"] = function(author, quote) return "Added quote from ".. author ..": ".. quote; end
     L["QUOTES_RESET"] = "All saved quotes have ben reset.";
     L["TAB_QUOTES"] = "Guildmates quotes";
-    L["TAB_DATABASE"] = "Database and sync";
+    L["TAB_SYNC"] = "Sync quotes";
     L["TAB_ABOUT"] = "About";
     L["HEADER_NEW_QUOTE"] = "New quote";
     L["HEADER_QUOTE_LIST"] = "Saved quotes";
     L["LABEL_AUTHOR"] = "Author:";
     L["LABEL_QUOTE"] = "Quote:";
     L["LABEL_ADD_QUOTE_BUTTON"] = "Add";
+    L["LABEL_SYNC_BUTTON"] = "Fetch quotes from guild";
+    L["LABEL_SYNC_ONGOING_BUTTON"] = "Fetching...";
     L["LABEL_DELETE_QUOTE_BUTTON"] = "Delete";
     L["LABEL_ACTIONS_OPTIONS"] = "Actions";
     L["LABEL_SYNC_OPTIONS"] = "Synchronization";
