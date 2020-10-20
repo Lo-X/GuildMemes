@@ -7,6 +7,7 @@ local MESSAGE_ASK_QUOTE_LIST = "ASK_QUOTE_LIST";
 local MESSAGE_SEND_QUOTE_LIST = "SEND_QUOTE_LIST";
 local MESSAGE_ASK_QUOTE = "ASK_QUOTE";
 local MESSAGE_SEND_QUOTE = "SEND_QUOTE";
+local MESSAGE_UPDATE_QUOTE = "UPDATE_QUOTE";
 
 -- send comm message to all addon owners in the guild
 function GuildMemes:SendComm(message)
@@ -37,6 +38,11 @@ function GuildMemes:OnCommReceived(prefix, message, distribution, sender)
         local quote = GuildMemes.Quote:Create();
         quote:Unpack(message);
         GuildMemes:OnQuoteReceived(quote);
+    elseif MESSAGE_UPDATE_QUOTE == command then
+        local message = string.sub(message, nextposition);
+        local quote = GuildMemes.Quote:Create();
+        quote:Unpack(message);
+        GuildMemes:OnQuoteReceived(quote);
     end
 end
 
@@ -62,4 +68,10 @@ end
 function GuildMemes:SendQuote(quote)
     local message = quote:Pack();
     GuildMemes:SendComm(MESSAGE_SEND_QUOTE .." ".. message);
+end
+
+-- update quote
+function GuildMemes:SendQuoteUpdate(quote)
+    local message = quote:Pack();
+    GuildMemes:SendComm(MESSAGE_UPDATE_QUOTE .." ".. message);
 end

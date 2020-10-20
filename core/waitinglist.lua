@@ -36,6 +36,7 @@ function WaitingList:Add(quote)
     -- new one
     if nil == self:Find(quote.id) then
         table.insert(GuildMemes.quoteWaitingList, quote);
+
         return true;
     end
 

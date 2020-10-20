@@ -74,14 +74,22 @@ local options = {
             type = "group",
             inline = true,
             args = {
-                automaticSync = {
-                    name = L["LABEL_OPTION_AUTO_SYNC"],
-                    desc = L["LABEL_OPTION_AUTO_SYNC_DESCRIPTION"],
+                automaticSyncCreation = {
+                    name = L["LABEL_OPTION_AUTO_SYNC_CREATION"],
+                    desc = L["LABEL_OPTION_AUTO_SYNC_CREATION_DESCRIPTION"],
                     type = "toggle",
                     width = "full",
-                    set = function(info,val) GuildMemes.Database:SetOption("auto_sync", val); end,
-                    get = function(info) return GuildMemes.Database:GetOption("auto_sync"); end,
-                }
+                    set = function(info,val) GuildMemes.Database:SetOption("auto_sync_creation", val); end,
+                    get = function(info) return GuildMemes.Database:GetOption("auto_sync_creation"); end,
+                },
+                automaticSyncUpdate = {
+                    name = L["LABEL_OPTION_AUTO_SYNC_UPDATE"],
+                    desc = L["LABEL_OPTION_AUTO_SYNC_UPDATE_DESCRIPTION"],
+                    type = "toggle",
+                    width = "full",
+                    set = function(info,val) GuildMemes.Database:SetOption("auto_sync_update", val); end,
+                    get = function(info) return GuildMemes.Database:GetOption("auto_sync_update"); end,
+                },
             },
         },
     }
@@ -94,7 +102,8 @@ local dbDefaults = {
     global = {
         quotes = {},
         options = {
-            auto_sync = true,
+            auto_sync_creation = true,
+            auto_sync_update = true,
         },
     }
 };
@@ -124,7 +133,7 @@ function GuildMemes:OnEnable()
     -- say hello
     GuildMemes:Print(L["ADDON_MOTD"]);
 
-    if true == GuildMemes.Database:GetOption("auto_sync") then
+    if true == GuildMemes.Database:GetOption("auto_sync_creation") then
         GuildMemes:AskQuoteList();
     end
 end
@@ -177,10 +186,22 @@ end
 --
 -- @param Quote quote
 function GuildMemes:OnQuoteReceived(quote)
-    if nil == GuildMemes.Database:Find(quote.id) then
-        if true == GuildMemes.Database:GetOption("auto_sync") then
+    local myQuote = GuildMemes.Database:Find(quote.id);
+    if nil == myQuote then
+        if true == GuildMemes.Database:GetOption("auto_sync_creation") then
             GuildMemes.Database:Save(quote);
             GuildMemes:Print(L["QUOTE_ADDED"](quote.source, quote.quote));
+        else
+            if true == GuildMemes.WaitingList:Add(quote) then
+                GuildMemes:Debug("Added to waiting list: ".. quote.quote);
+            end
+        end
+    else
+        if true == GuildMemes.Database:GetOption("auto_sync_update") then
+            if quote.updatedAt > myQuote.updatedAt then
+                myQuote:UpdateFrom(quote);
+                GuildMemes:Print(L["QUOTE_UPDATED"](quote.source, quote.quote));
+            end
         else
             if true == GuildMemes.WaitingList:Add(quote) then
                 GuildMemes:Debug("Added to waiting list: ".. quote.quote);

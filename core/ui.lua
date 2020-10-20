@@ -6,6 +6,7 @@ local setmetatable = _G.setmetatable;
 local AceGUI = LibStub("AceGUI-3.0");
 local isOpened = false;
 GuildMemes.syncTimer = nil;
+GuildMemes.syncAskTimer = nil;
 
 local TAB_QUOTES = "TAB_QUOTES";
 local TAB_SYNC = "TAB_SYNC";
@@ -51,14 +52,20 @@ function GuildMemeUI:AddQuoteLine(quote, container)
     authorEdit:SetLabel(L["LABEL_AUTHOR"]);
     authorEdit:SetRelativeWidth(0.2);
     authorEdit:SetText(quote.source);
-    authorEdit:SetCallback("OnEnterPressed", function(widget, event, text) quote.source = text end);
+    authorEdit:SetCallback("OnEnterPressed", function(widget, event, text) 
+        quote:UpdateSource(text);
+        GuildMemes:SendQuoteUpdate(quote);
+    end);
     lineGroup:AddChild(authorEdit);
 
     local quoteEdit = AceGUI:Create("EditBox");
     quoteEdit:SetLabel(L["LABEL_QUOTE"]);
     quoteEdit:SetRelativeWidth(0.67);
     quoteEdit:SetText(quote.quote);
-    quoteEdit:SetCallback("OnEnterPressed", function(widget, event, text) quote.quote = text end);
+    quoteEdit:SetCallback("OnEnterPressed", function(widget, event, text)
+        quote:UpdateQuote(text);
+        GuildMemes:SendQuoteUpdate(quote);
+    end);
     lineGroup:AddChild(quoteEdit);
 
     local deleteButton = AceGUI:Create("Button");
@@ -205,7 +212,6 @@ local function FillTabSync(container)
             local syncButton = AceGUI:Create("Button");
             syncButton:SetText(L["LABEL_SYNC_BUTTON"]);
             syncButton:SetRelativeWidth(0.5);
-            if true == GuildMemes.Database:GetOption("auto_sync") then syncButton:SetDisabled(true) end
             actionGroup:AddChild(syncButton);
 
 
@@ -221,10 +227,18 @@ local function FillTabSync(container)
             GuildMemeUI:RefreshWaitingList(scrollFrame);
 
     syncButton:SetCallback("OnClick", function(widget, event, text)
-        GuildMemes:AskQuoteList(); 
-        GuildMemes.syncTimer = GuildMemes:ScheduleRepeatingTimer("RefreshWaitingList", 2, scrollFrame);
-        syncButton:SetText(L["LABEL_SYNC_ONGOING_BUTTON"]);
-        syncButton:SetDisabled(true);
+        if nil == GuildMemes.syncTimer then
+            GuildMemes:AskQuoteList();
+            GuildMemes.syncTimer = GuildMemes:ScheduleRepeatingTimer("RefreshWaitingList", 2, scrollFrame);
+            GuildMemes.syncAskTimer = GuildMemes:ScheduleRepeatingTimer("AskQuoteList", 10, scrollFrame);
+            syncButton:SetText(L["LABEL_SYNC_ONGOING_BUTTON"]);
+        else
+            GuildMemes:CancelTimer(GuildMemes.syncTimer);
+            GuildMemes:CancelTimer(GuildMemes.syncAskTimer);
+            GuildMemes.syncTimer = nil;
+            GuildMemes.syncAskTimer = nil;
+            syncButton:SetText(L["LABEL_SYNC_BUTTON"]);
+        end
     end)
 
     container:AddChild(tabGroup);
@@ -234,6 +248,9 @@ end
 local function SelectGroup(container, event, group)
     if nil ~= GuildMemes.syncTimer then
         GuildMemes:CancelTimer(GuildMemes.syncTimer);
+        GuildMemes:CancelTimer(GuildMemes.syncAskTimer);
+        GuildMemes.syncTimer = nil;
+        GuildMemes.syncAskTimer = nil;
     end
     container:ReleaseChildren();
     if TAB_QUOTES == group then

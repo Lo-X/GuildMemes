@@ -9,6 +9,7 @@ if L then
     L["ADDON_AUTHOR"] = "Author:";
     L["ADDON_MOTD"] = "Hey, thanks for using "..addonName.."! Type |cffffd700/gm|r or |cffffd700/guildmemes|r for options and |cffffd700/gm add|r for the quotes window.";
     L["QUOTE_ADDED"] = function(author, quote) return "Added quote from ".. author ..": ".. quote; end
+    L["QUOTE_UPDATED"] = function(author, quote) return "Updated quote from ".. author ..": ".. quote; end
     L["QUOTES_RESET"] = "All saved quotes have ben reset.";
     L["TAB_QUOTES"] = "Guildmates quotes";
     L["TAB_SYNC"] = "Sync quotes";
@@ -19,7 +20,7 @@ if L then
     L["LABEL_QUOTE"] = "Quote:";
     L["LABEL_ADD_QUOTE_BUTTON"] = "Add";
     L["LABEL_SYNC_BUTTON"] = "Fetch quotes from guild";
-    L["LABEL_SYNC_ONGOING_BUTTON"] = "Fetching...";
+    L["LABEL_SYNC_ONGOING_BUTTON"] = "(Fetching...) Cancel";
     L["LABEL_DELETE_QUOTE_BUTTON"] = "Delete";
     L["LABEL_ACTIONS_OPTIONS"] = "Actions";
     L["LABEL_SYNC_OPTIONS"] = "Synchronization";
@@ -30,7 +31,9 @@ if L then
     L["LABEL_ACTION_RESET_DATABASE"] = "Reset quote database";
     L["LABEL_ACTION_RESET_DATABASE_DESCRIPTION"] = "This will erase all your saved quotes! If auto sync is enabled you will receive quotes from your guildmates at login if they have GuildMeme installed.";
     L["LABEL_ACTION_RESET_DATABASE_CONFIRM"] = "This will erase all your saved quotes! Are you sure?";
-    L["LABEL_OPTION_AUTO_SYNC"] = "Sync quotes automatically";
-    L["LABEL_OPTION_AUTO_SYNC_DESCRIPTION"] = "Synchronize guildmates database automatically at login and automatically add newly created quotes when your guildmates create them."
+    L["LABEL_OPTION_AUTO_SYNC_CREATION"] = "Sync new quotes automatically";
+    L["LABEL_OPTION_AUTO_SYNC_CREATION_DESCRIPTION"] = "Synchronize guildmates database automatically at login and automatically add newly created quotes when your guildmates create them."
+    L["LABEL_OPTION_AUTO_SYNC_UPDATE"] = "Sync updated quotes automatically";
+    L["LABEL_OPTION_AUTO_SYNC_UPDATE_DESCRIPTION"] = "Automatically update quotes when your guildmates edit them."
     L["ERROR_NOT_IN_GUILD"] = "You can only use this addon if you have a guild!";
 end
