@@ -43,4 +43,5 @@ if L then
     L["LABEL_OPTION_PULL_RAID_MESSAGE"] = "Share a random quote on /pull";
     L["LABEL_OPTION_PULL_RAID_MESSAGE_DESCRIPTION"] = "Send a raid alert or party message with a random quote when you use the /pull command.";
     L["ERROR_NOT_IN_GUILD"] = "You can only use this addon if you have a guild!";
+    L["ERROR_QUOTE_TOO_LONG"] = "The quote is too long, it can only contain a maximum of 220 characters!";
 end

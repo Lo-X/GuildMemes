@@ -10,19 +10,35 @@ GuildMemes.syncAskTimer = nil;
 
 local TAB_QUOTES = "TAB_QUOTES";
 local TAB_SYNC = "TAB_SYNC";
+local MAX_QUOTE_CHAR = 220;
 
 -- Add quote form object
 local GuildMemeUI = {
     authorValue = "",
     quoteValue = "",
     button = nil,
+    addErrorLabel = nil,
 };
 GuildMemeUI.__index = GuildMemeUI;
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+function GuildMemeUI:CheckQuoteLength()
+    if strlenutf8(self.quoteValue) > MAX_QUOTE_CHAR then
+        self.addErrorLabel:SetText("|cFFCC3333".. L["ERROR_QUOTE_TOO_LONG"] .."|r");
+
+        return false;
+    else
+        if nil ~= self.addErrorLabel then
+            self.addErrorLabel:SetText("|cFFCC3333|r");
+        end
+
+        return true;
+    end
+end
+
 function GuildMemeUI:CheckButtonEnable()
-    if "" ~= self.authorValue and "" ~= self.quoteValue then
+    if "" ~= self.authorValue and "" ~= self.quoteValue and true == self:CheckQuoteLength() then
         self.button:SetDisabled(false);
     else
         self.button:SetDisabled(true);
@@ -178,7 +194,7 @@ local function FillTabQuotes(container)
             authorEdit:SetRelativeWidth(0.2);
             authorEdit:SetCallback("OnEnterPressed", function(widget, event, text) 
                 quoteForm.authorValue = text;
-                quoteForm:CheckButtonEnable(); 
+                quoteForm:CheckButtonEnable();
             end);
             addFormGroup:AddChild(authorEdit);
 
@@ -187,6 +203,7 @@ local function FillTabQuotes(container)
             quoteEdit:SetRelativeWidth(0.67);
             quoteEdit:SetCallback("OnEnterPressed", function(widget, event, text) 
                 quoteForm.quoteValue = text;
+                quoteForm:CheckQuoteLength(); 
                 quoteForm:CheckButtonEnable();
             end);
             addFormGroup:AddChild(quoteEdit);
@@ -197,6 +214,12 @@ local function FillTabQuotes(container)
             addFormGroup:AddChild(addButton);
             quoteForm.button = addButton;
             quoteForm:CheckButtonEnable();
+
+            local errorLabel = AceGUI:Create("Label");
+            errorLabel:SetRelativeWidth(1);
+            errorLabel:SetText("|cFFCC3333|r");
+            addFormGroup:AddChild(errorLabel);
+            quoteForm.addErrorLabel = errorLabel;
 
 
         local quotesHeading = AceGUI:Create("Heading");
@@ -216,7 +239,7 @@ local function FillTabQuotes(container)
             GuildMemeUI:RefreshQuoteList(scrollFrame);
 
     addButton:SetCallback("OnClick", function(widget, event, text)
-        if "" ~= quoteForm.authorValue and "" ~= quoteForm.quoteValue then
+        if "" ~= quoteForm.authorValue and "" ~= quoteForm.quoteValue and true == GuildMemeUI:CheckQuoteLength() then
             -- add the quote
             local quote = GuildMemes:AddQuote(quoteForm.authorValue, quoteForm.quoteValue);
             quoteForm.authorValue = "";
