@@ -29,6 +29,15 @@ function GuildMemeUI:CheckButtonEnable()
     end
 end
 
+function GuildMemeUI:ResetTimers()
+    if nil ~= GuildMemes.syncTimer then
+        GuildMemes:CancelTimer(GuildMemes.syncTimer);
+        GuildMemes:CancelTimer(GuildMemes.syncAskTimer);
+        GuildMemes.syncTimer = nil;
+        GuildMemes.syncAskTimer = nil;
+    end
+end
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- refreshes the quote list display
@@ -53,8 +62,7 @@ function GuildMemeUI:AddQuoteLine(quote, container)
     authorEdit:SetRelativeWidth(0.2);
     authorEdit:SetText(quote.source);
     authorEdit:SetCallback("OnEnterPressed", function(widget, event, text) 
-        quote:UpdateSource(text);
-        GuildMemes:SendQuoteUpdate(quote);
+        GuildMemes:UpdateQuote(quote, text, quote.quote);
     end);
     lineGroup:AddChild(authorEdit);
 
@@ -63,8 +71,7 @@ function GuildMemeUI:AddQuoteLine(quote, container)
     quoteEdit:SetRelativeWidth(0.67);
     quoteEdit:SetText(quote.quote);
     quoteEdit:SetCallback("OnEnterPressed", function(widget, event, text)
-        quote:UpdateQuote(text);
-        GuildMemes:SendQuoteUpdate(quote);
+        GuildMemes:UpdateQuote(quote, quote.source, text);
     end);
     lineGroup:AddChild(quoteEdit);
 
@@ -76,17 +83,33 @@ function GuildMemeUI:AddQuoteLine(quote, container)
 end
 
 -- refreshes the waiting list display
-function GuildMemeUI:RefreshWaitingList(container)
+function GuildMemeUI:RefreshWaitingList(container, initialCall)
+    local quotes = GuildMemes.WaitingList:FindAll();
+    initialCall = initialCall or false;
     container:ReleaseChildren();
-    table.foreach(GuildMemes.WaitingList:FindAll(), function(k, quote)
-        GuildMemeUI:AddWaitingListLine(quote, container);
-    end);
+
+    if 0 < table.getn(quotes) then
+        table.foreach(quotes, function(k, quote)
+            GuildMemeUI:AddWaitingListLine(quote, container);
+        end);
+    elseif false == initialCall then
+        local emptyLabel = AceGUI:Create("Label");
+        emptyLabel:SetRelativeWidth(1);
+        emptyLabel:SetText(L["LABEL_SYNC_NO_QUOTE_FOUND"]);
+        container:AddChild(emptyLabel);
+    end
+
     container:DoLayout();
 end
 function GuildMemes:RefreshWaitingList(container) GuildMemeUI:RefreshWaitingList(container); end
 
 -- adds a waiting quote line in container
 function GuildMemeUI:AddWaitingListLine(quote, container)
+    local color = "FF3DA807";
+    if "update" == quote.type then 
+        color = "FFF5C30F";
+    end;
+
     local lineGroup = AceGUI:Create("InlineGroup");
     lineGroup:SetFullWidth(true);
     lineGroup:SetLayout("Flow");
@@ -94,19 +117,32 @@ function GuildMemeUI:AddWaitingListLine(quote, container)
 
     local authorLabel = AceGUI:Create("Label");
     authorLabel:SetRelativeWidth(0.2);
-    authorLabel:SetText(quote.source);
+    authorLabel:SetText("|c".. color .. quote.source .."|r");
     lineGroup:AddChild(authorLabel);
 
     local quoteLabel = AceGUI:Create("Label");
-    quoteLabel:SetRelativeWidth(0.67);
-    quoteLabel:SetText(quote.quote);
+    quoteLabel:SetRelativeWidth(0.42);
+    quoteLabel:SetText("|c".. color .. quote.quote .."|r");
+    lineGroup:AddChild(quoteLabel);
+
+    local quoteLabel = AceGUI:Create("Label");
+    quoteLabel:SetRelativeWidth(0.2);
+    quoteLabel:SetText(date(L["DATE_FORMAT"], quote.updatedAt));
     lineGroup:AddChild(quoteLabel);
 
     local addButton = AceGUI:Create("Button");
-    addButton:SetText(L["LABEL_ADD_QUOTE_BUTTON"]);
-    addButton:SetRelativeWidth(0.12);
+    if quote.type == "update" then
+        addButton:SetText(L["LABEL_UPDATE_QUOTE_BUTTON"]);
+    else
+        addButton:SetText(L["LABEL_ADD_QUOTE_BUTTON"]);
+    end
+    addButton:SetRelativeWidth(0.17);
     addButton:SetCallback("OnClick", function(widget, event, text)
-        GuildMemes.Database:Save(quote);
+        if quote.type == "update" then
+            GuildMemes.Database:UpdateFromExternal(quote);
+        else
+            GuildMemes.Database:Save(quote);
+        end
         GuildMemes.WaitingList:Remove(quote);
         GuildMemeUI:RefreshWaitingList(container);
     end);
@@ -224,19 +260,16 @@ local function FillTabSync(container)
             scrollFrame = AceGUI:Create("ScrollFrame");
             scrollFrame:SetLayout("Flow");
             scrollGroup:AddChild(scrollFrame);
-            GuildMemeUI:RefreshWaitingList(scrollFrame);
+            GuildMemeUI:RefreshWaitingList(scrollFrame, true);
 
     syncButton:SetCallback("OnClick", function(widget, event, text)
         if nil == GuildMemes.syncTimer then
             GuildMemes:AskQuoteList();
             GuildMemes.syncTimer = GuildMemes:ScheduleRepeatingTimer("RefreshWaitingList", 2, scrollFrame);
-            GuildMemes.syncAskTimer = GuildMemes:ScheduleRepeatingTimer("AskQuoteList", 10, scrollFrame);
+            GuildMemes.syncAskTimer = GuildMemes:ScheduleRepeatingTimer("AskQuoteList", 15, scrollFrame);
             syncButton:SetText(L["LABEL_SYNC_ONGOING_BUTTON"]);
         else
-            GuildMemes:CancelTimer(GuildMemes.syncTimer);
-            GuildMemes:CancelTimer(GuildMemes.syncAskTimer);
-            GuildMemes.syncTimer = nil;
-            GuildMemes.syncAskTimer = nil;
+            GuildMemeUI:ResetTimers();
             syncButton:SetText(L["LABEL_SYNC_BUTTON"]);
         end
     end)
@@ -246,12 +279,7 @@ end
 
 -- Callback function for OnGroupSelected
 local function SelectGroup(container, event, group)
-    if nil ~= GuildMemes.syncTimer then
-        GuildMemes:CancelTimer(GuildMemes.syncTimer);
-        GuildMemes:CancelTimer(GuildMemes.syncAskTimer);
-        GuildMemes.syncTimer = nil;
-        GuildMemes.syncAskTimer = nil;
-    end
+    GuildMemeUI:ResetTimers();
     container:ReleaseChildren();
     if TAB_QUOTES == group then
         FillTabQuotes(container);
@@ -269,9 +297,7 @@ function GuildMemes:OpenUI(openTab)
     local frame = AceGUI:Create("Frame")
     frame:SetTitle(addonName);
     frame:SetCallback("OnClose", function(widget)
-        if nil ~= GuildMemes.syncTimer then
-            GuildMemes:CancelTimer(GuildMemes.syncTimer);
-        end
+        GuildMemeUI:ResetTimers();
         AceGUI:Release(widget);
         isOpened = false;
     end)

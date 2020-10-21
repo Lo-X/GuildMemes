@@ -174,11 +174,29 @@ function GuildMemes:AddQuote(source, content)
     return quote;
 end
 
+-- Update a Quote
+--
+-- @param Quote quote: The quote to update
+-- @param string source: The name of the quote author
+-- @param string content: The quote itself
+-- @return Quote
+function GuildMemes:UpdateQuote(quote, source, content)
+    quote.source = source;
+    quote.quote = content;
+    GuildMemes.Database:Save(quote);
+    GuildMemes:SendQuoteUpdate(quote);
+
+    -- remove the quote from the waiting list if we updated it
+    if nil ~= GuildMemes.WaitingList:Find(quote.id) then
+        GuildMemes.WaitingList:Remove(quote);
+    end
+
+    return quote;
+end
+
 function GuildMemes:OnQuoteListReceived(ids)
     for id in ids do
-        if nil == GuildMemes.Database:Find(id) then
-            GuildMemes:AskQuote(id);
-        end
+        GuildMemes:AskQuote(id);
     end
 end
 
@@ -203,8 +221,10 @@ function GuildMemes:OnQuoteReceived(quote)
                 GuildMemes:Print(L["QUOTE_UPDATED"](quote.source, quote.quote));
             end
         else
-            if true == GuildMemes.WaitingList:Add(quote) then
-                GuildMemes:Debug("Added to waiting list: ".. quote.quote);
+            if quote.updatedAt > myQuote.updatedAt then
+                if true == GuildMemes.WaitingList:Add(quote, "update") then
+                    GuildMemes:Debug("Added to waiting list: ".. quote.quote);
+                end
             end
         end
     end

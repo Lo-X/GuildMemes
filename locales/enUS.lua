@@ -8,6 +8,7 @@ if L then
     L["ADDON_VERSION"] = "Version:";
     L["ADDON_AUTHOR"] = "Author:";
     L["ADDON_MOTD"] = "Hey, thanks for using "..addonName.."! Type |cffffd700/gm|r or |cffffd700/guildmemes|r for options and |cffffd700/gm add|r for the quotes window.";
+    L["DATE_FORMAT"] = "%m/%d/%y";
     L["QUOTE_ADDED"] = function(author, quote) return "Added quote from ".. author ..": ".. quote; end
     L["QUOTE_UPDATED"] = function(author, quote) return "Updated quote from ".. author ..": ".. quote; end
     L["QUOTES_RESET"] = "All saved quotes have ben reset.";
@@ -19,8 +20,10 @@ if L then
     L["LABEL_AUTHOR"] = "Author:";
     L["LABEL_QUOTE"] = "Quote:";
     L["LABEL_ADD_QUOTE_BUTTON"] = "Add";
+    L["LABEL_UPDATE_QUOTE_BUTTON"] = "Update";
     L["LABEL_SYNC_BUTTON"] = "Fetch quotes from guild";
     L["LABEL_SYNC_ONGOING_BUTTON"] = "(Fetching...) Cancel";
+    L["LABEL_SYNC_NO_QUOTE_FOUND"] = "No quotes have been found amongst connected guildmates that own GuildMemes.";
     L["LABEL_DELETE_QUOTE_BUTTON"] = "Delete";
     L["LABEL_ACTIONS_OPTIONS"] = "Actions";
     L["LABEL_SYNC_OPTIONS"] = "Synchronization";

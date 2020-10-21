@@ -32,12 +32,26 @@ end
 -- Add a new Quote to the waiting list
 --
 -- @param Quote quote: The Quote object to add
-function WaitingList:Add(quote)
+function WaitingList:Add(quote, type)
+    type = type or "new";
+    quote.type = type;
+
+    local myQuote = self:Find(quote.id);
+
     -- new one
-    if nil == self:Find(quote.id) then
+    if nil == myQuote then
         table.insert(GuildMemes.quoteWaitingList, quote);
 
         return true;
+    else
+        -- in that case, we need to check if the received quote is actually more recent than the one
+        -- in waiting list, and if that's the case, we need to remove the old one and insert the new one
+        if myQuote.updatedAt < quote.updatedAt then
+            self:Remove(myQuote);
+            table.insert(GuildMemes.quoteWaitingList, quote);
+
+            return true;
+        end
     end
 
     return false;

@@ -12,6 +12,7 @@ local Quote = {
     addedBy = nil,
     createdAt = nil,
     updatedAt = nil,
+    type = nil, -- internal use only
 };
 Quote.__index = Quote;
 
@@ -40,28 +41,6 @@ function Quote:CreateFromTable(data)
     setmetatable(data, Quote);
 
     return data;
-end
-
--- Update this quote source and mark it as updated
---
--- @param string source: author of the quote
--- @return Quote
-function Quote:UpdateSource(source)
-    self.source = source;
-    self.updatedAt = GetServerTime();
-
-    return self;
-end
-
--- Update this quote content
---
--- @param string quote: the quote content itself
--- @return Quote
-function Quote:UpdateQuote(quote)
-    self.quote = quote;
-    self.updatedAt = GetServerTime();
-
-    return self;
 end
 
 -- Update this quote from the values of another one

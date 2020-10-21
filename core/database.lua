@@ -48,6 +48,18 @@ function Database:Save(quote)
     end
 end
 
+-- Upodate a Quote by copying an existing one
+--
+-- @param Quote quote: The up to date Quote object
+function Database:UpdateFromExternal(quote)
+    local myQuote = self:Find(quote.id);
+    if nil ~= myQuote then
+        myQuote.source = quote.source;
+        myQuote.quote = quote.quote;
+        myQuote.updatedAt = quote.updatedAt;
+    end
+end
+
 
 -- Removes a Quote from the database
 --
