@@ -19,6 +19,14 @@ end
 
 -- process the incoming message
 function GuildMemes:OnCommReceived(prefix, message, distribution, sender)
+    if "D4" == prefix then
+        GuildMemes:HandleD4Message(prefix, message, distribution, sender);
+    else
+        GuildMemes:HandleAddonMessage(prefix, message, distribution, sender);
+    end
+end
+
+function GuildMemes:HandleAddonMessage(prefix, message, distribution, sender)
     -- ignore messages we have sent
     if GuildMemes.CURRENT_PLAYER == sender then return end
     GuildMemes:Debug("Comm Received // ".. message .. " // from ".. sender);

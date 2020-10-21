@@ -92,6 +92,22 @@ local options = {
                 },
             },
         },
+        featuresGroup = {
+            order = 6,
+            name = L["LABEL_FEATURES_OPTIONS"],
+            type = "group",
+            inline = true,
+            args = {
+                raidMessagePull = {
+                    name = L["LABEL_OPTION_PULL_RAID_MESSAGE"],
+                    desc = L["LABEL_OPTION_PULL_RAID_MESSAGE_DESCRIPTION"],
+                    type = "toggle",
+                    width = "full",
+                    set = function(info,val) GuildMemes.Database:SetOption("quote_on_pull", val); end,
+                    get = function(info) return GuildMemes.Database:GetOption("quote_on_pull"); end,
+                },
+            },
+        },
     }
 };
 LibStub("AceConfig-3.0"):RegisterOptionsTable(addonName, options);
@@ -104,6 +120,7 @@ local dbDefaults = {
         options = {
             auto_sync_creation = true,
             auto_sync_update = true,
+            quote_on_pull = true,
         },
     }
 };
@@ -129,6 +146,7 @@ function GuildMemes:OnEnable()
 
     -- hook to events
     GuildMemes:RegisterComm(GuildMemes.COMM_PREFIX);
+    GuildMemes:RegisterComm("D4");
 
     -- say hello
     GuildMemes:Print(L["ADDON_MOTD"]);

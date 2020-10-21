@@ -33,6 +33,22 @@ function Database:FindAll()
     return r;
 end
 
+-- Returns a random Quote from the local database
+--
+-- @return Quote|nil
+function Database:FindRandom()
+    local quotes = GuildMemes.db.global.quotes;
+    local size = table.getn(quotes);
+    
+    if size > 0 then
+        local n = random(1, size);
+        
+        return GuildMemes.Quote:CreateFromTable(quotes[n]);
+    end
+
+    return nil;
+end
+
 
 -- Add a new Quote to the database or save an existing one
 --
