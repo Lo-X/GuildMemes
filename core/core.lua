@@ -148,9 +148,8 @@ function GuildMemes:OnSlashCommand(input)
         local command, nextposition = GuildMemes:GetArgs(input, 1);
         if "add" == command then
             GuildMemes:OpenUI();
-        elseif "reset" == command then
-            GuildMemes.Database:Reset();
-            GuildMemes:Print(L["QUOTES_RESET"]);
+        elseif "ping" == command then
+            GuildMemes:SendPing();
         end
     else
         InterfaceOptionsFrame_OpenToCategory(addonName);
@@ -229,6 +228,11 @@ function GuildMemes:OnQuoteReceived(quote)
         end
     end
 end
+
+function GuildMemes:OnPongReceived(from, version)
+    GuildMemes:Print("> |cffffd700".. from .."|r has version |cffffd700".. version .."|r");
+end
+
 
 function GuildMemes:PrintError(message)
     GuildMemes:Print("|cFFCC3333".. message .."|r");

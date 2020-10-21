@@ -8,6 +8,8 @@ local MESSAGE_SEND_QUOTE_LIST = "SEND_QUOTE_LIST";
 local MESSAGE_ASK_QUOTE = "ASK_QUOTE";
 local MESSAGE_SEND_QUOTE = "SEND_QUOTE";
 local MESSAGE_UPDATE_QUOTE = "UPDATE_QUOTE";
+local MESSAGE_PING = "PING";
+local MESSAGE_PONG = "PONG";
 
 -- send comm message to all addon owners in the guild
 function GuildMemes:SendComm(message)
@@ -43,6 +45,11 @@ function GuildMemes:OnCommReceived(prefix, message, distribution, sender)
         local quote = GuildMemes.Quote:Create();
         quote:Unpack(message);
         GuildMemes:OnQuoteReceived(quote);
+    elseif MESSAGE_PING == command then
+        GuildMemes:SendPong();
+    elseif MESSAGE_PONG == command then
+        local version = string.sub(message, nextposition);
+        GuildMemes:OnPongReceived(sender, version);
     end
 end
 
@@ -74,4 +81,12 @@ end
 function GuildMemes:SendQuoteUpdate(quote)
     local message = quote:Pack();
     GuildMemes:SendComm(MESSAGE_UPDATE_QUOTE .." ".. message);
+end
+
+function GuildMemes:SendPing()
+    GuildMemes:SendComm(MESSAGE_PING);
+end
+
+function GuildMemes:SendPong()
+    GuildMemes:SendComm(MESSAGE_PONG .." ".. GuildMemes.version);
 end
