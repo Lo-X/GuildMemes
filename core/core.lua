@@ -9,6 +9,7 @@ local GuildMemes = LibStub("AceAddon-3.0"):NewAddon(addon, addonName, "AceEvent-
 
 -- CONFIGURATION
 GuildMemes.version = --[["1.0.0-alpha1"]] "dev";
+GuildMemes.versionAlertSent = false
 
 GuildMemes.COMM_PREFIX = addonName;
 GuildMemes.COMM_CHANNEL = "GUILD";
@@ -154,6 +155,8 @@ function GuildMemes:OnEnable()
     if true == GuildMemes.Database:GetOption("auto_sync_creation") then
         GuildMemes:AskQuoteList();
     end
+
+    GuildMemes:SendPing();
 end
 
 function GuildMemes:OnDisable()
@@ -247,8 +250,16 @@ function GuildMemes:OnQuoteReceived(quote)
     end
 end
 
+function GuildMemes:OnPingReceived(from, version)
+    if version > GuildMemes.version and false == GuildMemes.versionAlertSent then
+        GuildMemes:Print(L["ADDON_VERSION_OUTDATED"]);
+        GuildMemes.versionAlertSent = true;
+    end
+    GuildMemes:SendPong();
+end
+
 function GuildMemes:OnPongReceived(from, version)
-    GuildMemes:Print("> |cffffd700".. from .."|r has version |cffffd700".. version .."|r");
+    GuildMemes:Debug("> |cffffd700".. from .."|r has version |cffffd700".. version .."|r");
 end
 
 

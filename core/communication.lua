@@ -54,7 +54,8 @@ function GuildMemes:HandleAddonMessage(prefix, message, distribution, sender)
         quote:Unpack(message);
         GuildMemes:OnQuoteReceived(quote);
     elseif MESSAGE_PING == command then
-        GuildMemes:SendPong();
+        local version = string.sub(message, nextposition);
+        GuildMemes:OnPingReceived(sender, version);
     elseif MESSAGE_PONG == command then
         local version = string.sub(message, nextposition);
         GuildMemes:OnPongReceived(sender, version);
@@ -92,7 +93,7 @@ function GuildMemes:SendQuoteUpdate(quote)
 end
 
 function GuildMemes:SendPing()
-    GuildMemes:SendComm(MESSAGE_PING);
+    GuildMemes:SendComm(MESSAGE_PING .." ".. GuildMemes.version);
 end
 
 function GuildMemes:SendPong()

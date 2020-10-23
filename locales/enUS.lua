@@ -5,6 +5,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale(addonName, "enUS", true);
 if L then
     L["ADDON_NAME"] = addonName;
     L["ADDON_DESCRIPTION"] = "Save and share your guildmates best quotes!";
+    L["ADDON_VERSION_OUTDATED"] = "A more recent version of the addon is available!";
     L["ADDON_VERSION"] = "Version:";
     L["ADDON_AUTHOR"] = "Author:";
     L["ADDON_MOTD"] = "Hey, thanks for using "..addonName.."! Type |cffffd700/gm|r or |cffffd700/guildmemes|r for options and |cffffd700/gm add|r for the quotes window.";
