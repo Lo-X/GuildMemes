@@ -12,14 +12,16 @@ local Quote = {
     addedBy = nil,
     createdAt = nil,
     updatedAt = nil,
+    type = nil, -- internal use only
 };
 Quote.__index = Quote;
 
 -- used to serialize and unserialize quotes
 local SEPARATOR = "/#/";
 
--- constructor
--- 'addedBy' and 'createdAt' are automatically filled
+-- Constructor. 'addedBy' and 'createdAt' are automatically filled
+--
+-- @return Quote
 function Quote:Create()
     local quote = {};
     setmetatable(quote, Quote);
@@ -31,21 +33,39 @@ function Quote:Create()
     return quote;
 end
 
--- constructor with table data
--- useful to transform saved data to actual objects
+-- Constructor with table data, useful to transform saved data to actual objects
+--
+-- @param array data: key-values of a quote
+-- @return Quote
 function Quote:CreateFromTable(data)
     setmetatable(data, Quote);
+
     return data;
 end
 
--- serialization
--- transform this quote object to a string
+-- Update this quote from the values of another one
+--
+-- @param Quote quote: the Quote to copy
+-- @return Quote
+function Quote:UpdateFrom(quote)
+    self.source = quote.source;
+    self.quote = quote.quote;
+    self.updatedAt = quote.updatedAt;
+
+    return self;
+end
+
+-- Transform this quote object to a string (serialize)
+--
+-- @return string
 function Quote:Pack()
     return self.id .. SEPARATOR .. self.source .. SEPARATOR .. self.addedBy .. SEPARATOR .. self.createdAt .. SEPARATOR .. self.updatedAt .. SEPARATOR .. self.quote;
 end
 
--- deserialization
--- from a string to an object
+-- Transform a string to a Quote object
+--
+-- @param string message: serialized quote
+-- @return Quote
 function Quote:Unpack(message)
     local segments = string.gmatch(message, "([^("..SEPARATOR..")]+)");
     local data = {};
@@ -63,6 +83,7 @@ function Quote:Unpack(message)
     end
 end
 
+-- Print the quote, should be used as debugging tool only
 function Quote:Print(data)
     data = data or self;
     GuildMemes:Print(data.source .." (on ".. data.createdAt .."): ".. data.quote);

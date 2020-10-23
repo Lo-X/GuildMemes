@@ -25,13 +25,28 @@ end
 --
 -- @return Quote[]
 function Database:FindAll()
-    local quotes = GuildMemes.db.global.quotes;
     local r = {};
-    for index, quote in ipairs(quotes) do
+    for index, quote in ipairs(GuildMemes.db.global.quotes) do
         table.insert(r, GuildMemes.Quote:CreateFromTable(quote));
     end
 
     return r;
+end
+
+-- Returns a random Quote from the local database
+--
+-- @return Quote|nil
+function Database:FindRandom()
+    local quotes = GuildMemes.db.global.quotes;
+    local size = table.getn(quotes);
+    
+    if size > 0 then
+        local n = random(1, size);
+        
+        return GuildMemes.Quote:CreateFromTable(quotes[n]);
+    end
+
+    return nil;
 end
 
 
@@ -49,9 +64,50 @@ function Database:Save(quote)
     end
 end
 
+-- Upodate a Quote by copying an existing one
+--
+-- @param Quote quote: The up to date Quote object
+function Database:UpdateFromExternal(quote)
+    local myQuote = self:Find(quote.id);
+    if nil ~= myQuote then
+        myQuote.source = quote.source;
+        myQuote.quote = quote.quote;
+        myQuote.updatedAt = quote.updatedAt;
+    end
+end
+
+
+-- Removes a Quote from the database
+--
+-- @param Quote quote: The Quote object to remove
+function Database:Remove(quote)
+    local index = nil;
+    for i, q in ipairs(GuildMemes.db.global.quotes) do
+        if quote.id == q.id then
+            index = i;
+        end
+    end
+
+    if nil ~= index then
+        table.remove(GuildMemes.db.global.quotes, index);
+    else
+        GuildMemes:PrintError("Quote {".. quote.id .."} not found in database, unable to remove it");
+    end
+end
+
+
 -- Reset the local database
 function Database:Reset()
     GuildMemes.db.global.quotes = {};
+end
+
+
+function Database:SetOption(option, value)
+    GuildMemes.db.global.options[option] = value;
+end
+
+function Database:GetOption(option)
+    return GuildMemes.db.global.options[option];
 end
 
 GuildMemes.Database = Database;

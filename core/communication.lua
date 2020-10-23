@@ -1,11 +1,15 @@
 
 local addonName, GuildMemes = ...;
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName, true);
 
 -- MESSAGES CONSTANTS
 local MESSAGE_ASK_QUOTE_LIST = "ASK_QUOTE_LIST";
 local MESSAGE_SEND_QUOTE_LIST = "SEND_QUOTE_LIST";
 local MESSAGE_ASK_QUOTE = "ASK_QUOTE";
 local MESSAGE_SEND_QUOTE = "SEND_QUOTE";
+local MESSAGE_UPDATE_QUOTE = "UPDATE_QUOTE";
+local MESSAGE_PING = "PING";
+local MESSAGE_PONG = "PONG";
 
 -- send comm message to all addon owners in the guild
 function GuildMemes:SendComm(message)
@@ -15,8 +19,16 @@ end
 
 -- process the incoming message
 function GuildMemes:OnCommReceived(prefix, message, distribution, sender)
+    if "D4" == prefix then
+        GuildMemes:HandleD4Message(prefix, message, distribution, sender);
+    else
+        GuildMemes:HandleAddonMessage(prefix, message, distribution, sender);
+    end
+end
+
+function GuildMemes:HandleAddonMessage(prefix, message, distribution, sender)
     -- ignore messages we have sent
-    if "dev" ~= GuildMemes.version and GuildMemes.CURRENT_PLAYER == sender then return end
+    if GuildMemes.CURRENT_PLAYER == sender then return end
     GuildMemes:Debug("Comm Received // ".. message .. " // from ".. sender);
 
     local command, nextposition = GuildMemes:GetArgs(message, 1);
@@ -36,6 +48,17 @@ function GuildMemes:OnCommReceived(prefix, message, distribution, sender)
         local quote = GuildMemes.Quote:Create();
         quote:Unpack(message);
         GuildMemes:OnQuoteReceived(quote);
+    elseif MESSAGE_UPDATE_QUOTE == command then
+        local message = string.sub(message, nextposition);
+        local quote = GuildMemes.Quote:Create();
+        quote:Unpack(message);
+        GuildMemes:OnQuoteReceived(quote);
+    elseif MESSAGE_PING == command then
+        local version = string.sub(message, nextposition);
+        GuildMemes:OnPingReceived(sender, version);
+    elseif MESSAGE_PONG == command then
+        local version = string.sub(message, nextposition);
+        GuildMemes:OnPongReceived(sender, version);
     end
 end
 
@@ -61,4 +84,18 @@ end
 function GuildMemes:SendQuote(quote)
     local message = quote:Pack();
     GuildMemes:SendComm(MESSAGE_SEND_QUOTE .." ".. message);
+end
+
+-- update quote
+function GuildMemes:SendQuoteUpdate(quote)
+    local message = quote:Pack();
+    GuildMemes:SendComm(MESSAGE_UPDATE_QUOTE .." ".. message);
+end
+
+function GuildMemes:SendPing()
+    GuildMemes:SendComm(MESSAGE_PING .." ".. GuildMemes.version);
+end
+
+function GuildMemes:SendPong()
+    GuildMemes:SendComm(MESSAGE_PONG .." ".. GuildMemes.version);
 end

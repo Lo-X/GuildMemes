@@ -4,7 +4,7 @@
 ## Notes: Save and share your guildmates best quotes!
 ## Notes-frFR: Conserve et partage les pires citations de tes guildmates !
 ## Author: Bloojin
-## Version: 0.0.1
+## Version: 1.0.0-alpha1
 ## SavedVariables: GuildMemesDB
 ## X-Category: Guild
 ## X-License: WTFPL
@@ -17,4 +17,7 @@ locales/frFR.lua
 core/core.lua
 core/quote.lua
 core/database.lua
+core/waitinglist.lua
 core/communication.lua
+core/ui.lua
+core/pull.lua
