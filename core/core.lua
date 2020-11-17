@@ -8,7 +8,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale(addonName, true);
 local GuildMemes = LibStub("AceAddon-3.0"):NewAddon(addon, addonName, "AceEvent-3.0", "AceConsole-3.0", "AceComm-3.0", "AceTimer-3.0");
 
 -- CONFIGURATION
-GuildMemes.version = "1.0.0-alpha1" --[["dev"]];
+GuildMemes.version = "1.0.0" --[["dev"]];
 GuildMemes.versionAlertSent = false
 
 GuildMemes.COMM_PREFIX = addonName;
