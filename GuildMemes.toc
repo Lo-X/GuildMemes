@@ -1,10 +1,10 @@
-## Interface: 90001
+## Interface: 90002
 
 ## Title: GuildMemes
 ## Notes: Save and share your guildmates best quotes!
 ## Notes-frFR: Conserve et partage les pires citations de tes guildmates !
 ## Author: Bloojin
-## Version: 1.0.0
+## Version: 1.0.1
 ## SavedVariables: GuildMemesDB
 ## X-Category: Guild
 ## X-License: WTFPL
