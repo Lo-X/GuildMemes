@@ -90,9 +90,26 @@ function Database:Remove(quote)
 
     if nil ~= index then
         table.remove(GuildMemes.db.global.quotes, index);
+        table.insert(GuildMemes.db.global.deleted, quote.id);
     else
         GuildMemes:PrintError("Quote {".. quote.id .."} not found in database, unable to remove it");
     end
+end
+
+
+-- Checks if a quote has been deleted
+--
+-- @param int id: The Quote id
+-- @return boolean
+function Database:IsDeleted(id)
+    local indices = GuildMemes.db.global.deleted;
+    for i,v in ipairs(indices) do
+        if tonumber(v) == tonumber(id) then
+            return true;
+        end
+    end
+
+    return false;
 end
 
 

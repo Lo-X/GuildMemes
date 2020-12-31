@@ -118,6 +118,7 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0");
 local dbDefaults = {
     global = {
         quotes = {},
+        deleted = {},
         options = {
             auto_sync_creation = true,
             auto_sync_update = true,
@@ -227,6 +228,9 @@ function GuildMemes:OnQuoteReceived(quote)
     local myQuote = GuildMemes.Database:Find(quote.id);
     if nil == myQuote then
         if true == GuildMemes.Database:GetOption("auto_sync_creation") then
+            if true == GuildMemes.Database:IsDeleted(quote.id) then
+                return;
+            end
             GuildMemes.Database:Save(quote);
             GuildMemes:Print(L["QUOTE_ADDED"](quote.source, quote.quote));
         else
