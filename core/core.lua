@@ -8,7 +8,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale(addonName, true);
 local GuildMemes = LibStub("AceAddon-3.0"):NewAddon(addon, addonName, "AceEvent-3.0", "AceConsole-3.0", "AceComm-3.0", "AceTimer-3.0");
 
 -- CONFIGURATION
-GuildMemes.version = "1.0.1" --[["dev"]];
+GuildMemes.version = "1.1.0";
 GuildMemes.versionAlertSent = false
 
 GuildMemes.COMM_PREFIX = addonName;
@@ -107,6 +107,14 @@ local options = {
                     set = function(info,val) GuildMemes.Database:SetOption("quote_on_pull", val); end,
                     get = function(info) return GuildMemes.Database:GetOption("quote_on_pull"); end,
                 },
+                joinedGroupMessage = {
+                    name = L["LABEL_OPTION_PLAYER_JOINED_GROUP_MESSAGE"],
+                    desc = L["LABEL_OPTION_PLAYER_JOINED_GROUP_MESSAGE_DESCRIPTION"],
+                    type = "toggle",
+                    width = "full",
+                    set = function(info,val) GuildMemes.Database:SetOption("quote_on_player_join_group", val); end,
+                    get = function(info) return GuildMemes.Database:GetOption("quote_on_player_join_group"); end,
+                },
             },
         },
     }
@@ -123,9 +131,11 @@ local dbDefaults = {
             auto_sync_creation = true,
             auto_sync_update = true,
             quote_on_pull = true,
+            quote_on_player_join_group = true,
         },
     }
 };
+local group, newgroup = {}, {}
 
 function GuildMemes:OnInitialize()
     -- init database
@@ -149,6 +159,7 @@ function GuildMemes:OnEnable()
     -- hook to events
     GuildMemes:RegisterComm(GuildMemes.COMM_PREFIX);
     GuildMemes:RegisterComm("D4");
+    GuildMemes:RegisterEvent("GROUP_ROSTER_UPDATE", "OnRosterChange");
 
     -- say hello
     GuildMemes:Print(L["ADDON_MOTD"]);
@@ -165,7 +176,6 @@ function GuildMemes:OnDisable()
 end
 
 function GuildMemes:OnSlashCommand(input)
-    -- Called when the addon is disabled
     if nil ~= input and "" ~= input then
         local command, nextposition = GuildMemes:GetArgs(input, 1);
         if "add" == command then
@@ -177,6 +187,32 @@ function GuildMemes:OnSlashCommand(input)
         InterfaceOptionsFrame_OpenToCategory(addonName);
         InterfaceOptionsFrame_OpenToCategory(addonName);
         --GuildMemes:OpenUI();
+    end
+end
+
+function GuildMemes:OnRosterChange()
+    group, newgroup = newgroup, group;
+    wipe(newgroup);
+
+    if not IsInGroup() then
+        return;
+    end
+
+    local n, groupType = GetNumGroupMembers(), "raid";
+    if not IsInRaid() then
+        n, groupType = n - 1, "party"
+    end
+    for i = 1, n do
+        local name = GetUnitName(groupType..i, true)
+        if name and name ~= UNKNOWN then
+            newgroup[name] = i
+        end
+    end
+
+    for name, index in pairs(newgroup) do
+        if not group[name] then
+            GuildMemes:HandlePlayerJoinedGroup(name);
+        end
     end
 end
 

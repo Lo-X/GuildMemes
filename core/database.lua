@@ -36,8 +36,18 @@ end
 -- Returns a random Quote from the local database
 --
 -- @return Quote|nil
-function Database:FindRandom()
+function Database:FindRandom(playerName)
     local quotes = GuildMemes.db.global.quotes;
+
+    if nil ~= playerName then
+        quotes = {};
+        for index, quote in ipairs(GuildMemes.db.global.quotes) do
+            if quote.source == playerName then
+                table.insert(quotes, GuildMemes.Quote:CreateFromTable(quote));
+            end
+        end
+    end
+
     local size = table.getn(quotes);
     
     if size > 0 then

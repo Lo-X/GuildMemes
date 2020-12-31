@@ -43,6 +43,8 @@ if L then
     L["LABEL_OPTION_AUTO_SYNC_UPDATE_DESCRIPTION"] = "Automatically update quotes when your guildmates edit them."
     L["LABEL_OPTION_PULL_RAID_MESSAGE"] = "Share a random quote on /pull";
     L["LABEL_OPTION_PULL_RAID_MESSAGE_DESCRIPTION"] = "Send a raid alert or party message with a random quote when you use the /pull command.";
+    L["LABEL_OPTION_PLAYER_JOINED_GROUP_MESSAGE"] = "Share a random quote when a player joins the group";
+    L["LABEL_OPTION_PLAYER_JOINED_GROUP_MESSAGE_DESCRIPTION"] = "Send party/raid message with a player's random quote when he joins.";
     L["ERROR_NOT_IN_GUILD"] = "You can only use this addon if you have a guild!";
     L["ERROR_QUOTE_TOO_LONG"] = "The quote is too long, it can only contain a maximum of 220 characters!";
 end
