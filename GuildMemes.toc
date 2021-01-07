@@ -3,7 +3,7 @@
 ## Title: GuildMemes
 ## Notes: Save and share your guildmates best quotes!
 ## Notes-frFR: Conserve et partage les pires citations de tes guildmates !
-## Author: Bloojin
+## Author: Acacïa-Hyjal
 ## Version: 1.1.0
 ## SavedVariables: GuildMemesDB
 ## X-Category: Guild

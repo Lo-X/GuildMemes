@@ -36,7 +36,7 @@ local options = {
         desc = {
             order = 3,
             type = "description",
-            name = "|cffffd700    "..L["ADDON_AUTHOR"].."|r Bloojin@Hyjal-EU\n\n",
+            name = "|cffffd700    "..L["ADDON_AUTHOR"].."|r Acacïa@Hyjal-EU\n\n",
             cmdHidden = true
         },
         actionGroup = {

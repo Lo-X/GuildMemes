@@ -10,6 +10,11 @@ function GuildMemes:HandlePlayerJoinedGroup(playerName)
         return;
     end
 
+    -- if the player that joined is the current player
+    if GuildMemes.CURRENT_PLAYER == playerName then
+        return;
+    end
+
     local quote = GuildMemes.Database:FindRandom(playerName);
 
     if nil ~= quote then
